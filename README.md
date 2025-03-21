@@ -4,6 +4,7 @@ This module provides professional service listing functionality for Magento 2, a
 
 ## Features
 
+- ⚠️ **ONLY HYVA** Compatible! ⚠️
 - Customer professional profile management
 - Social media links integration
 - Certificates and services listing
