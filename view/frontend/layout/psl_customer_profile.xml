@@ -16,6 +16,7 @@
             <block name="psl.profile"
                    ifconfig="qoliber_psl/general/enabled"
                    template="Qoliber_Psl::hyva/psl/customer/profile.phtml"
+                   cacheable="false"
             >
                 <arguments>
                     <argument name="details_view_model" xsi:type="object">Qoliber\Psl\ViewModel\Details</argument>
