@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Qoliber\Psl\Setup\Patch\Data;
 
+use Magento\AdvancedSearch\Model\Client\ClientResolver;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use OpenSearch\Client;
@@ -20,67 +21,13 @@ class CreateOpenSearchIndex implements DataPatchInterface
 {
     /**
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \OpenSearch\Client|null $client
+     * @param \Magento\AdvancedSearch\Model\Client\ClientResolver $clientResolver
      */
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig,
-        private ?Client $client = null
+        private readonly ClientResolver $clientResolver,
     ) {
-        $this->client = ClientBuilder::fromConfig(
-            $this->buildOSConfig(
-                $this->scopeConfig->getValue('catalog/search/opensearch_server_hostname'),
-                $this->scopeConfig->getValue('catalog/search/opensearch_server_port'),
-                $this->scopeConfig->getValue('catalog/search/opensearch_username') ?: '',
-                $this->scopeConfig->getValue('catalog/search/opensearch_password') ?: '',
-                (bool) $this->scopeConfig->getValue('catalog/search/opensearch_enable_auth')
-            ),
-            true
-        );
-    }
 
-    /**
-     * Build Config
-     *
-     * @param string $host
-     * @param string $port
-     * @param string $user
-     * @param string $password
-     * @param bool $auth
-     * @return mixed[]
-     */
-    private function buildOSConfig(string $host, string $port, string $user, string $password, bool $auth): array
-    {
-        $hostname = preg_replace('/http[s]?:\/\//i', '', $host);
-        // @codingStandardsIgnoreStart
-        $protocol = parse_url($host, PHP_URL_SCHEME);
-        // @codingStandardsIgnoreEnd
-        if (!$protocol) {
-            $protocol = 'http';
-        }
-
-        $authString = '';
-
-        if ($auth) {
-            $authString = "{$user}:{$password}@";
-        }
-
-        $portString = '';
-        if (!empty($port)) {
-            $portString = ':' . $port;
-        }
-
-        $host = $protocol . '://' . $authString . $hostname . $portString;
-
-        return [
-            'hosts' => [$host],
-            'hostname' => $hostname,
-            'port' => $port,
-            'enableAuth' => $auth,
-            'username' => $user,
-            'password' => $password,
-            'timeout' => 15,
-            'retries' => 3
-        ];
     }
 
     /**
@@ -90,27 +37,33 @@ class CreateOpenSearchIndex implements DataPatchInterface
      */
     public function apply(): CreateOpenSearchIndex
     {
-        if ($this->client) {
-            if ($this->client->indices()->exists(
+        /** @var \Magento\OpenSearch\Model\OpenSearch $client */
+        if ($client = $this->clientResolver->create()) {
+            if ($client->getOpenSearchClient()->indices()->exists(
                 ['index' => $this->scopeConfig->getValue('qoliber_psl/opensearch/index')]
             )) {
                 return $this;
             }
 
-            $this->client->indices()->create([
+            $client->getOpenSearchClient()->indices()->create([
                 'index' => $this->scopeConfig->getValue('qoliber_psl/opensearch/index'),
                 'body' => [
                     'settings' => [
                         "index.max_ngram_diff" => 10,
                         'analysis' => [
+                            'tokenizer' => [
+                                'ngram_tokenizer' => [
+                                    'type' => 'ngram',
+                                    'min_gram' => 2,
+                                    'max_gram' => 10,
+                                    'token_chars' => ['letter', 'digit']
+                                ]
+                            ],
                             'analyzer' => [
-                                'tokenizer' => [
-                                    'ngram_tokenizer' => [
-                                        'type' => 'ngram',
-                                        'min_gram' => 2,
-                                        'max_gram' => 10,
-                                        'token_chars' => ['letter', 'digit']
-                                    ]
+                                'ngram_analyzer' => [
+                                    'type' => 'custom',
+                                    'tokenizer' => 'ngram_tokenizer',
+                                    'filter' => ['lowercase', 'asciifolding']
                                 ],
                                 'value_normalizer' => [
                                     'type' => 'custom',
