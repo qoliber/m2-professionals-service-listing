@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="customer_psl_profile" engine="innodb" comment="customer profiles">
+        <column name="profile_id" xsi:type="int" comment="profile_id" nullable="true" identity="true" unsigned="true"
+                padding="10"/>
+        <column name="customer_id" xsi:type="int" unsigned="true" comment="customer id" nullable="true"/>
+        <column name="status" xsi:type="int" comment="status id" nullable="true"/>
+        <column name="company_name" xsi:type="varchar" comment="company name" nullable="true"/>
+        <column name="city" xsi:type="varchar" comment="city" nullable="true"/>
+        <column name="country" xsi:type="varchar" comment="country" nullable="true"/>
+        <column name="logo" xsi:type="varchar" comment="logo" nullable="true"/>
+        <column name="homepage_url" xsi:type="varchar" comment="homepage url" nullable="true"/>
+        <column name="full_address" xsi:type="text" comment="full_address" nullable="true"/>
+        <column name="latitude" xsi:type="decimal" scale="8" precision="11" comment="latitude" nullable="true"/>
+        <column name="longitude" xsi:type="decimal" scale="8" precision="11"  comment="longitude" nullable="true"/>
+        <column name="short_description" xsi:type="text" comment="short_description" nullable="true"/>
+        <column name="description" xsi:type="text" comment="description" nullable="true"/>
+        <column name="social_media_links" xsi:type="text" comment="social media links" nullable="true"/>
+        <column name="services" xsi:type="text" comment="services" nullable="true"/>
+        <column name="certificates" xsi:type="text" comment="certificates" nullable="true"/>
+        <column name="created_at" xsi:type="timestamp" nullable="false" default="CURRENT_TIMESTAMP"
+                comment="Creation Time"/>
+        <column name="updated_at" xsi:type="timestamp" nullable="false" on_update="true" default="CURRENT_TIMESTAMP"
+                comment="Update Time"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="profile_id"/>
+        </constraint>
+
+        <constraint referenceId="AUTO_INCREMENT_TEST_INT_AUTO_INCREMENT_WITH_NULLABLE" xsi:type="unique">
+            <column name="customer_id" />
+        </constraint>
+
+        <constraint xsi:type="foreign" referenceId="CUSTOMER_PROFILE_CUSTOMER_ID"
+                    table="customer_profile" column="customer_id"
+                    referenceTable="customer_entity" referenceColumn="entity_id" onDelete="CASCADE"/>
+    </table>
+</schema>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route method="POST" url="/V1/psl/search">
+        <service class="Qoliber\Psl\Api\PslSearchInterface" method="search"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+</routes>
+

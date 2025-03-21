@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <system>
+            <media_storage_configuration>
+                <allowed_resources>
+                    <media_gallery_image_folders>
+                        <psl>psl</psl>
+                    </media_gallery_image_folders>
+                </allowed_resources>
+            </media_storage_configuration>
+        </system>
+
+        <qoliber_psl>
+            <general>
+                <enabled>1</enabled>
+            </general>
+            <opensearch>
+                <index>psl_profiles</index>
+            </opensearch>
+            <settings>
+                <account_types><![CDATA[{
+                    "_1741975987855_855":{"account_type":"Agency"},
+                    "_1741975991880_880":{"account_type":"Freelancer"},
+                    "_1741975998062_62":{"account_type":"Solution Provider"}
+                }]]></account_types>
+            </settings>
+            <emails>
+                <profile_notification>qoliber_psl_emails_profile_notification</profile_notification>
+                <profile_approved>qoliber_psl_emails_profile_approved</profile_approved>
+                <profile_disapproved>qoliber_psl_emails_profile_disapproved</profile_disapproved>
+            </emails>
+            <details>
+                <social_media><![CDATA[{
+                    "_1742048245311_311":{"social_media":"Facebook"},
+                    "_1742048248919_919":{"social_media":"LinkedIn"},
+                    "_1742048252307_307":{"social_media":"GitHub"},
+                    "_1742048257580_580":{"social_media":"Twitter"},
+                    "_1742048264405_405":{"social_media":"TikTok"},
+                    "_1742048439885_885":{"social_media":"Instagram"}
+                }]]></social_media>
+                <certificates><![CDATA[{
+                    "_1742048265480_480":{"certificate":"Adobe Commerce Front-End Developer Expert"},
+                    "_1742048294787_787":{"certificate":"Adobe Commerce Front-end Developer Professional"},
+                    "_1742048304364_364":{"certificate":"Adobe Commerce Business Practitioner Expert"},
+                    "_1742048354624_624":{"certificate":"Adobe Commerce Business Practitioner Professional"},
+                    "_1742048384481_481":{"certificate":"Adobe Commerce Developer Expert"},
+                    "_1742048395626_626":{"certificate":"Adobe Commerce Developer Professional"},
+                    "_1742048413059_159":{"certificate":"Adobe Commerce Architect Master"}
+                }]]></certificates>
+                <services>
+                    <![CDATA[{
+                    "_1742153744767_767":{"service":"Magento Store Development"},
+                    "_1742153745584_584":{"service":"Magento Store Customization"},
+                    "_1742153745892_892":{"service":"Magento Theme Design And Customization"},
+                    "_1742153746169_169":{"service":"Magento Extension Development"},
+                    "_1742153746612_612":{"service":"Magento Performance Optimization"},
+                    "_1742153747482_482":{"service":"Magento Migration And Upgrades"},
+                    "_1742153747782_782":{"service":"Magento Security Audits And Maintenance"},
+                    "_1742153748112_112":{"service":"Magento API Integration"},
+                    "_1742153748421_421":{"service":"Magento PWA Development"},
+                    "_1742153748915_915":{"service":"Magento B2B Ecommerce Solutions"},
+                    "_1742153788967_967":{"service":"Magento Marketplace Development"},
+                    "_1742153789362_362":{"service":"Magento SEO Optimization"},
+                    "_1742153789718_718":{"service":"Magento Hosting And Infrastructure Setup"},
+                    "_1742153790127_127":{"service":"Magento Payment Gateway Integration"},
+                    "_1742153807026_26":{"service":"Magento ERP And CRM Integration"},
+                    "_1742153807410_410":{"service":"Magento Inventory And Order Management Solutions"},
+                    "_1742153808144_144":{"service":"Magento Headless Commerce Development"},
+                    "_1742153809545_545":{"service":"Magento UX UI Design Improvements"},
+                    "_1742153810128_128":{"service":"Magento Conversion Rate Optimization"},
+                    "_1742153810467_467":{"service":"Magento 24x7 Support And Maintenance"},
+                    "_1742153810799_799":{"service":"Ecommerce Strategy And Consulting"},
+                    "_1742153811219_219":{"service":"Ecommerce Branding And Identity Design"},
+                    "_1742153840575_575":{"service":"Ecommerce User Experience Design"},
+                    "_1742153840955_955":{"service":"Ecommerce User Interface Design"},
+                    "_1742153841280_280":{"service":"Ecommerce Mobile App Development"},
+                    "_1742153841986_986":{"service":"Ecommerce Custom Development"},
+                    "_1742153842337_337":{"service":"Ecommerce Digital Marketing Services"},
+                    "_1742153842682_682":{"service":"Ecommerce Content Strategy And Copywriting"},
+                    "_1742153843005_511":{"service":"Ecommerce Social Media Marketing"},
+                    "_1742153843290_290":{"service":"Ecommerce Email Marketing And Automation"},
+                    "_1742153872202_202":{"service":"Ecommerce Analytics And Reporting"},
+                    "_1742153872795_795":{"service":"Ecommerce AI And Personalization Solutions"},
+                    "_1742153873145_145":{"service":"Ecommerce Customer Experience Optimization"},
+                    "_1742153873598_598":{"service":"Ecommerce Affiliate Marketing Solutions"},
+                    "_1742153873896_896":{"service":"Ecommerce Video Marketing And Production"},
+                    "_1742153874189_189":{"service":"Ecommerce Loyalty And Rewards Program Development"}
+                    }]]></services>
+            </details>
+        </qoliber_psl>
+    </default>
+</config>

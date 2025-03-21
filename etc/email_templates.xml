@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+    <template id="qoliber_psl_emails_profile_notification"
+              label="PSL Profile Notification - Admin"
+              file="psl_profile_notification.html"
+              type="html"
+              module="Qoliber_Psl"
+              area="frontend"/>
+    <template id="qoliber_psl_emails_profile_approved"
+              label="PSL Profile Notification - Approved"
+              file="psl_profile_notification_approved.html"
+              type="html"
+              module="Qoliber_Psl"
+              area="frontend" />
+    <template id="qoliber_psl_emails_profile_disapproved"
+              label="PSL Profile Notification - Disapproved"
+              file="psl_profile_notification_disapproved.html"
+              type="html"
+              module="Qoliber_Psl"
+              area="frontend" />
+</config>

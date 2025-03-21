@@ -1,0 +1,15 @@
+<!--@subject {{trans "PSL profile has been updated in %store_name" store_name=$store.getFrontendName()}} @-->
+<!--@vars {
+"var store.getFrontendName()": "Store Name",
+"var customer.getEmail()|raw": "Customer Email"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p>{{trans "A new Professional Service Listing Profile has been added"|raw}}</p>
+<p>{{trans "Partner Email: <strong>%customer_email</strong>" customer_email=$customer.getEmail()|raw}}</p>
+<p>
+    {{trans "Details can be found in admin panel." }}
+</p>
+
+{{template config_path="design/email/footer_template"}}

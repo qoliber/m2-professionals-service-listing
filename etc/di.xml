@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Qoliber\Psl\Api\ProfileRepositoryInterface" type="Qoliber\Psl\Model\ProfileRepository" />
+    <preference for="Qoliber\Psl\Api\Data\ProfileInterface" type="Qoliber\Psl\Model\Data\Profile"/>
+    <preference for="Qoliber\Psl\Api\Data\ProfileSearchResultsInterface" type="Qoliber\Psl\Model\ProfileSearchResults"/>
+    <preference for="Qoliber\Psl\Api\PslSearchInterface" type="Qoliber\Psl\Model\PslSearchService"/>
+    <preference for="Qoliber\Psl\Api\Data\OpenSearchQueryInterface" type="Qoliber\Psl\Model\OpenSearchQuery"/>
+
+    <type name="Magento\Customer\Api\CustomerRepositoryInterface">
+        <plugin name="qoliber_psl_customer_profile" type="Qoliber\Psl\Plugin\Customer\PslProfile" />
+    </type>
+
+    <type name="Magento\Customer\Api\CustomerRepositoryInterface">
+        <arguments>
+            <argument name="searchFactory"
+                      xsi:type="object">Magento\OpenSearch\Model\Client\OpenSearchFactory</argument>
+        </arguments>
+    </type>
+
+    <type name="Qoliber\Psl\Api\ProfileRepositoryInterface">
+        <plugin name="qoliber_psl_opensearch_sync"
+                type="Qoliber\Psl\Plugin\OpenSearchProfileSync"
+                sortOrder="10"/>
+    </type>
+</config>

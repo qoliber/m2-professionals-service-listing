@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <system>
+        <section id="qoliber_psl" translate="label" sortOrder="70" showInDefault="1">
+            <class>separator-top</class>
+            <label>Membership Settings</label>
+            <tab>customer</tab>
+            <resource>Qoliber_Psl::config</resource>
+            <group id="general" translate="label" sortOrder="10" showInDefault="1">
+                <label>General Configuration</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1">
+                    <label>Enable Professional Service Listing</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="opensearch" translate="label" sortOrder="10" showInDefault="1">
+                <label>OpenSearch Setting</label>
+                <field id="index" translate="label comment" type="text" sortOrder="10" showInDefault="1">
+                    <label>OpenSearch Index Name</label>
+                </field>
+            </group>
+            <group id="emails" translate="label" type="text" sortOrder="20"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>PSL Email Notification Templates</label>
+                <field id="profile_notification" translate="label" type="select" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>New PSL Profile (sent to admin)</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                </field>
+                <field id="profile_disapproved" translate="label" type="select" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>PSL Notification - Profile Disapproved</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                </field>
+                <field id="profile_approved" translate="label" type="select" sortOrder="1"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Undesirable action template</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                </field>
+            </group>
+            <group id="settings" translate="label" type="text" sortOrder="30" showInDefault="1">
+                <label>Setting</label>
+                <field id="account_types" translate="label" sortOrder="1" showInDefault="1">
+                    <label>Account Types</label>
+                    <frontend_model>Qoliber\Psl\Block\System\Config\Form\Field\AccountType</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+            </group>
+            <group id="details" translate="label" type="text" sortOrder="40" showInDefault="1">
+                <label>Partner Details</label>
+                <field id="social_media" translate="label" sortOrder="1" showInDefault="1">
+                    <label>Social Media Links</label>
+                    <frontend_model>Qoliber\Psl\Block\System\Config\Form\Field\SocialMedia</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+                <field id="certificates" translate="label" sortOrder="1" showInDefault="1">
+                    <label>Certificate Types</label>
+                    <frontend_model>Qoliber\Psl\Block\System\Config\Form\Field\Certificates</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+                <field id="services" translate="label" sortOrder="1" showInDefault="1">
+                    <label>Services</label>
+                    <frontend_model>Qoliber\Psl\Block\System\Config\Form\Field\Services</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+            </group>
+            <group id="membership" translate="label" type="text" sortOrder="50" showInDefault="1">
+                <label>Membership Configuration</label>
+                <field id="individual" translate="label comment" type="select" sortOrder="20" showInDefault="1">
+                    <label>Individual Partnership Customer Group</label>
+                    <source_model>Magento\Customer\Model\Config\Source\Group</source_model>
+                </field>
+                <field id="bronze" translate="label comment" type="select" sortOrder="50" showInDefault="1">
+                    <label>Bronze Partnership Customer Group</label>
+                    <source_model>Magento\Customer\Model\Config\Source\Group</source_model>
+                </field>
+                <field id="silver" translate="label comment" type="select" sortOrder="100" showInDefault="1">
+                    <label>Silver Partnership Customer Group</label>
+                    <source_model>Magento\Customer\Model\Config\Source\Group</source_model>
+                </field>
+                <field id="gold" translate="label comment" type="select" sortOrder="150" showInDefault="1">
+                    <label>Gold Partnership Customer Group</label>
+                    <source_model>Magento\Customer\Model\Config\Source\Group</source_model>
+                </field>
+                <field id="Platinum" translate="label comment" type="select" sortOrder="200" showInDefault="1">
+                    <label>Platinum Partnership Customer Group</label>
+                    <source_model>Magento\Customer\Model\Config\Source\Group</source_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

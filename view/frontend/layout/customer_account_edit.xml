@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="form.additional.info">
+            <block name="form_additional_info_psl"
+                   template="Qoliber_Psl::shopping-assistance.phtml"
+            >
+                <arguments>
+                    <argument name="account_types" xsi:type="object">Qoliber\Psl\ViewModel\AccountTypes</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

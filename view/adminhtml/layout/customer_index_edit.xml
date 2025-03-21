@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="customer_form">
+            <block class="Qoliber\Psl\Block\Adminhtml\Customer\Edit\Tabs\PslTab" name="customer_psl_tab">
+                <arguments>
+                    <argument name="details_view_model" xsi:type="object">Qoliber\Psl\ViewModel\Details</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>

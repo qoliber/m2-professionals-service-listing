@@ -1,0 +1,68 @@
+<?php
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var \Qoliber\Psl\ViewModel\AccountTypes $accountTypeViewModel */
+$accountTypeViewModel = $block->getData('account_types');
+/** @var array<int, array{value: int, label: string} $accountTypes */
+$accountTypes = $accountTypeViewModel?->getAccountTypes() ?? [];
+?>
+<div class="mt-5 border-t border-b mb-8"
+     x-data="{ isChecked: <?= $accountTypeViewModel->isCustomerPublicProfile() ? 'true' : 'false';?>}">
+    <fieldset class="my-8">
+        <legend class="contents">
+            <span><?= $escaper->escapeHtml(__('Professional Service Listing Profile')) ?></span>
+        </legend>
+        <div class="field choice public_profile">
+            <input
+                type="checkbox"
+                name="public_profile"
+                title="<?= /** @noEscape */ __('Public Profile');?>"
+                value="1"
+                id="public_profile"
+                class="checkbox"
+                x-model="isChecked"
+            >
+            <label for="public_profile" class="label">
+                <span><?= /** @noEscape */ __('Public Profile');?></span>
+            </label>
+        </div>
+
+        <div
+            class="field w-full"
+            x-show="isChecked"
+            x-cloak
+            :class="{ 'required': isChecked }"
+        >
+            <label class="label" for="region_id">
+                <span><?= /* @noEscape */ __('Account Type:') ?></span>
+            </label>
+            <div class="control">
+                <select id="account_type" name="account_type"
+                        title="<?= /* @noEscape */ __('Account Type:') ?>"
+                        class="form-select validate-select region_id"
+                        :required="isChecked"
+                >
+                    <option value=""><?= $escaper->escapeHtml(__('Please select your account type')) ?></option>
+                    <?php foreach ($accountTypes as $accountType): ?>
+                    <option value="<?= /* @noEscape */ $accountType['value'] ?>"
+                        <?= $accountTypeViewModel->getCustomerAccountType() == $accountType['value'] ? 'selected' : ''?>
+                    >
+                        <?= $escaper->escapeHtml($accountType['label']) ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+    </fieldset>
+</div>

@@ -1,0 +1,296 @@
+<?php
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+
+/** @var $block \Magento\Backend\Block\Template */
+/** @var \Magento\Framework\Escaper $escaper */
+
+/** @var \Qoliber\Psl\ViewModel\Details $detailsViewModel */
+$detailsViewModel = $block->getData('details_view_model');
+$customerProfile = $detailsViewModel->getCustomerPslProfile();
+$countryCollection = $detailsViewModel->getCountryCollection();
+
+$platforms = implode(
+    ',',
+    array_map(fn($item) => "'" . $item['social_media'] . "'", $detailsViewModel->getSocialMedia())
+);
+
+$certificates = implode(
+    ',',
+    array_map(fn($item) => "'" . $item['certificate'] . "'", $detailsViewModel->getCertificates())
+);
+
+$servicesArray = $detailsViewModel->getServices();
+usort($servicesArray, fn($a, $b) => strcmp($a['service'], $b['service']));
+$services = implode(',', array_map(fn($item) => "'" . $item['service'] . "'", $servicesArray));
+?>
+<form method="post"
+      action="<?= /** @noEscape */ $escaper->escapeUrl('/psl/customer/profilePost') ?>"
+      enctype="multipart/form-data"
+>
+    <?= /** @noEscape */ $block->getBlockHtml('formkey') ?>
+    <div class="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+            <?= /** @noEscape */ __('Proffesional Service Listing Profile');?></h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-600">
+                    <?= /** @noEscape */ __('Company Name');?></label>
+                <input type="text" placeholder="<?= /** @noEscape */ __('Company Name');?>" class="form-input"
+                       name="company_name" value="<?= /** @noEscape */ $customerProfile->getCompanyName(); ?>" />
+            </div>
+
+            <div>
+                <label for="city" class="block text-sm font-medium text-gray-600">
+                    <?= /** @noEscape */ __('City');?></label>
+                <input type="text" placeholder="<?= /** @noEscape */ __('City');?>" class="form-input"
+                       name="city" value="<?= /** @noEscape */ $customerProfile->getCity(); ?>" />
+            </div>
+
+            <div>
+                <label for="country" class="block text-sm font-medium text-gray-600">
+                    <?= /** @noEscape */ __('Country'); ?></label>
+                <select name="country" class="form-input" required>
+                    <?php foreach ($countryCollection as $country): ?>
+                        <option value="<?= /** @noEscape */ $country['label']; ?>" <?=
+                        $country['label'] === $customerProfile->getCountry()
+                            ? 'selected'
+                            : ''; ?>><?= /** @noEscape */ $country['label']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <div>
+                <label for="url" class="block text-sm font-medium text-gray-600">
+                    <?= /** @noEscape */ __('Homepage URL'); ?></label>
+                <input type="url" class="form-input" placeholder="<?= /** @noEscape */ __('Homepage URL');?>"
+                       name="homepage_url" value="<?= /** @noEscape */ $customerProfile->getHomepageUrl(); ?>"/>
+            </div>
+
+            <div>
+                <label for="logo" class="block text-sm font-medium text-gray-600">
+                    <?= /** @noEscape */ __('Logo / Profile Pic'); ?></label>
+                <?php if ($logo = $customerProfile->getLogo()): ?>
+                    <div class="mb-2">
+                        <img src="<?= $escaper->escapeUrl($detailsViewModel->getPslPicture($logo)); ?>"
+                             alt="Current Logo" class="max-w-[250px] h-auto rounded-lg p-1 border border-gray-300" />
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="remove_logo" name="remove_logo" value="1"
+                               class="form-checkbox h-5 w-5 text-red-600">
+                        <label for="remove_logo" class="text-sm text-gray-700">
+                            <?= /** @noEscape */ __('Remove Image'); ?></label>
+                    </div>
+                <?php endif; ?>
+                <input type="file" class="form-input" name="logo" />
+            </div>
+
+            <div>
+                <label for="full_address" class="block text-sm font-medium text-gray-600">
+                    <?= /** @noEscape */ __('Full Address'); ?></label>
+                <textarea placeholder="<?= /** @noEscape */ __('Full Address'); ?>" class="form-input"
+                          name="full_address"><?= /** @noEscape */ $customerProfile->getFullAddress(); ?></textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600">
+                    <?= /** @noEscape */ __('Latitude'); ?></label>
+                <input type="number" class="form-input" placeholder="<?= /** @noEscape */ __('Latitude'); ?>"
+                       name="latitude" step=any value="<?= /** @noEscape */ $customerProfile->getLatitude(); ?>" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-600">
+                    <?= /** @noEscape */ __('Longitude'); ?></label>
+                <input type="number" class="form-input" placeholder="<?= /** @noEscape */ __('Longitude'); ?>"
+                       name="longitude" step=any value="<?= /** @noEscape */ $customerProfile->getLongitude(); ?>" />
+            </div>
+
+            <div class="col-span-2">
+                <label for="short_description" class="block text-sm font-medium text-gray-600"><?=
+                    /** @noEscape */ __('Short Description <strong>(no HTML content allowed)</strong>');?></label>
+                <textarea class="form-input" placeholder="<?= /** @noEscape */ __('Short Description');?>"
+                          rows="5" name="short_description"
+                ><?= /** @noEscape */ $customerProfile->getShortDescription(); ?></textarea>
+            </div>
+
+            <div class="col-span-2">
+                <label for="description" class="block text-sm font-medium text-gray-600"><?=
+                    /** @noEscape */ __('Description');?></label>
+                <textarea class="form-input" placeholder="<?= /** @noEscape */ __('Description');?>"
+                          rows="10" name="description"
+                ><?= /** @noEscape */ $customerProfile->getDescription(); ?></textarea>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div class="col-span-1" x-data="{
+                socialMedia: <?= /** @noEscape */ $detailsViewModel->formatJsonOutputForAlpineJS(
+                    $customerProfile->getSocialMediaLinks() ?? ''
+                );?>,
+                platforms: [<?= /** @noEscape */ $platforms ?>],
+                enabledPlatforms: <?= /** @noEscape */ $detailsViewModel->getEnabledValues(
+                    $customerProfile->getSocialMediaLinks() ?? ''
+                );?>,
+                toggleSocialMedia(platform) {
+                    if (this.enabledPlatforms.includes(platform)) {
+                        this.enabledPlatforms = this.enabledPlatforms.filter(p => p !== platform); // Disable platform
+                    } else {
+                        this.enabledPlatforms.push(platform); // Enable platform
+                    }
+                }
+            }">
+                <h2 class="block text-2xl font-semibold text-gray-800 mb-4">
+                    <?= /** @noEscape */ __('Social Media Links') ?>
+                </h2>
+
+                <template x-for="platform in platforms" :key="platform">
+                    <div class="flex items-center gap-2 mb-2">
+                        <!-- Checkbox to enable/disable -->
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600"
+                               :id="'social-enable-' + platform"
+                               @change="toggleSocialMedia(platform)"
+                               :checked="enabledPlatforms.includes(platform)" />
+
+                        <label class="text-sm font-medium text-gray-800 w-[120px]"
+                               :for="'social-enable-' + platform" x-text="platform"></label>
+
+                        <div class="w-full">
+                            <label class="block text-sm font-medium text-gray-600" :for="'social-url-' + platform">
+                                <?= /** @noEscape */ __('Profile URL'); ?>
+                            </label>
+                            <input type="url"
+                                   class="form-input w-full p-2 border rounded-lg bg-gray-200 text-gray-700"
+                                   :id="'social-url-' + platform"
+                                   x-model="socialMedia[platform]"
+                                   :name="'social_media_links[' + platform + ']'"
+                                   placeholder="Enter Profile URL"
+                                   :disabled="!enabledPlatforms.includes(platform)"
+                                   :class="{
+                                        'bg-gray-200 text-gray-400': !enabledPlatforms.includes(platform),
+                                        'bg-white text-black': enabledPlatforms.includes(platform)
+                                   }"
+                                   required
+                            />
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+
+            <div class="col-span-1" x-data="{
+    companyCertificates: <?= /** @noEscape */ $detailsViewModel->formatJsonOutputForAlpineJS(
+        $customerProfile->getCertificates() ?? ''
+    ); ?>,
+    certificateTypes: [<?= /** @noEscape */ $certificates; ?>],
+    enabledCertificates: <?= /** @noEscape */ $detailsViewModel->getEnabledValues(
+        $customerProfile->getCertificates() ?? ''
+    ); ?>,
+    toggleCertificate(certType) {
+        if (this.enabledCertificates.includes(certType)) {
+            this.enabledCertificates = this.enabledCertificates.filter(c => c !== certType); // Disable certificate
+        } else {
+            this.enabledCertificates.push(certType); // Enable certificate
+        }
+    }
+}">
+                <h2 class="block text-2xl font-semibold text-gray-800 mb-4">
+                    <?= /** @noEscape */ __('Certificates'); ?>
+                </h2>
+
+                <template x-for="certType in certificateTypes" :key="certType">
+                    <div class="flex items-center gap-2 mb-2">
+                        <!-- Checkbox: Enables/disables the certificate -->
+                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600"
+                               :id="'cert-enable-' + certType"
+                               @change="toggleCertificate(certType)"
+                               :checked="enabledCertificates.includes(certType)">
+
+                        <label class="text-sm font-medium text-gray-800 w-[200px]"
+                               :for="'cert-enable-' + certType" x-text="certType"></label>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600"
+                                   :for="'cert-count-' + certType">
+                                <?= /** @noEscape */ __('Number of Certificates'); ?>
+                            </label>
+                            <input type="number"
+                                   class="form-input w-[100px] p-2 border rounded-lg bg-gray-200 text-gray-700"
+                                   :id="'cert-count-' + certType"
+                                   x-model="companyCertificates[certType]"
+                                   min="1" placeholder="0"
+                                   :name="'certificates[' + certType + ']'"
+                                   :disabled="!enabledCertificates.includes(certType)"
+                                   :class="{
+                            'bg-gray-200 text-gray-700': !enabledCertificates.includes(certType),
+                            'bg-white text-black': enabledCertificates.includes(certType)
+                       }"
+                                   required
+                            />
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+
+            <div class="col-span-2" x-data="{
+                serviceList: [<?= /** @noEscape */ $services; ?>],
+                searchQuery: '',
+                companyServices: <?= /** @noEscape */ $detailsViewModel->formatJsonOutputForAlpineJS(
+                    $customerProfile->getServices() ?? ''
+                ); ?>,
+                enabledServices: <?= /** @noEscape */ $detailsViewModel->getEnabledValues(
+                    $customerProfile->getServices() ?? ''
+                ); ?>,
+                toggleService(service) {
+                    if (this.enabledServices.includes(service)) {
+                        this.enabledServices = this.enabledServices.filter(s => s !== service); // Disable service
+                    } else {
+                        this.enabledServices.push(service); // Enable service
+                    }
+                },
+                filterServices(service) {
+                    return this.searchQuery === '' || service.toLowerCase().includes(this.searchQuery.toLowerCase());
+                }
+            }">
+                <label class="block text-2xl font-semibold text-gray-800 mb-4">
+                    <?= /** @noEscape */ __('Services Offered'); ?>
+                </label>
+
+                <!-- Search Box -->
+                <div class="mb-4">
+                    <input type="text" class="form-input w-full p-2 border rounded-lg"
+                           placeholder="<?= /** @noEscape */ __('Search services...'); ?>" x-model="searchQuery" />
+                </div>
+
+                <!-- Service List -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <template x-for="service in serviceList" :key="service">
+                        <div class="flex items-center gap-2" x-show="filterServices(service)">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600"
+                                   :id="'service-enable-' + service"
+                                   @change="toggleService(service)"
+                                   :checked="enabledServices.includes(service)"
+                                   :value="service"
+                                   :name="'services[]'" />
+
+                            <label class="text-sm font-medium text-gray-800"
+                                   :for="'service-enable-' + service" x-text="service"></label>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 text-center">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                <?= /** @noEscape */ __('Save Profile'); ?></button>
+        </div>
+    </div>
+</form>

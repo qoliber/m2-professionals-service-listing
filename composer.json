@@ -1,0 +1,28 @@
+{
+    "name": "qoliber/m2-professionals-service-listing",
+    "version": "1.0",
+    "source": {
+        "type": "git",
+        "url": "git@github.com:qoliber/m2-professionals-service-listing",
+        "reference": "master"
+    },
+    "authors": [
+        {
+            "name": "Jakub Winkler",
+            "email": "jwinkler@qoliber.com"
+        },
+        {
+            "name": "qoliber",
+            "email": "info@qoliber.com"
+        }
+    ],
+    "license": "MIT",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Qoliber\\Psl\\": ""
+        }
+    }
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
+    <extension_attributes for="Magento\Customer\Api\Data\CustomerInterface">
+        <!-- remove / improve in 1.1, data is stores in NoSQL database for frontend -->
+        <attribute code="psl_profile" type="Qoliber\Psl\Api\Data\ProfileInterface" />
+    </extension_attributes>
+</config>

@@ -1,0 +1,27 @@
+{
+    "customer_psl_profile": {
+        "column": {
+            "profile_id": true,
+            "customer_id": true,
+            "company_name": true,
+            "city": true,
+            "country": true,
+            "logo": true,
+            "homepage_url": true,
+            "full_address": true,
+            "latitude": true,
+            "longitude": true,
+            "short_description": true,
+            "description": true,
+            "social_media_links": true,
+            "certificates": true,
+            "services": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

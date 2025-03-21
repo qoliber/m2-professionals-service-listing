@@ -1,0 +1,221 @@
+<?php
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+
+/** @var $block \Magento\Backend\Block\Template */
+/** @var \Magento\Framework\Escaper $escaper */
+
+/** @var \Qoliber\Psl\ViewModel\Details $detailsViewModel */
+$detailsViewModel = $block->getData('details_view_model');
+$customerProfile = $detailsViewModel->getCustomerPslProfile($block->getRequest()->getParam('id'));
+$socialMediaLinks = $customerProfile->getSocialMediaLinks() ?? '';
+?>
+
+<div class="psl-profile-container" id="psl-profile-container">
+    <div class="fieldset-wrapper">
+        <div class="fieldset-wrapper-title">
+            <span class="title"><?= $escaper->escapeHtml(__('Customer Profile')) ?></span>
+        </div>
+
+        <table class="admin__table-secondary">
+            <tbody>
+            <tr>
+                <th><?= /** @noEscape */ (__('Company Name:')) ?></th>
+                <td><?= $escaper->escapeHtml($customerProfile->getCompanyName()); ?></td>
+            </tr>
+
+            <tr>
+                <th><?=  /** @noEscape */ (__('City:')) ?></th>
+                <td><?= $escaper->escapeHtml($customerProfile->getCity()); ?></td>
+            </tr>
+
+            <tr>
+                <th><?= /** @noEscape */ __('Country:') ?></th>
+                <td><?= $escaper->escapeHtml($customerProfile->getCountry()) ?></td>
+            </tr>
+
+            <tr>
+                <th><?= /** @noEscape */ __('Homepage URL:') ?></th>
+                <td><?= $escaper->escapeUrl($customerProfile->getHomepageUrl()); ?></td>
+            </tr>
+
+            <tr>
+                <th><?= /** @noEscape */ __('Logo / Profile Pic:') ?></th>
+                <td>
+                    <?php if ($customerProfile->getLogo()): ?>
+                        <div>
+                            <?php $logo = $customerProfile->getLogo(); ?>
+                            <?php if ($logo): ?>
+                            <img src="<?= $escaper->escapeUrl($detailsViewModel->getPslPicture($logo)); ?>"
+                                 alt="Current Logo" class="admin__control-thumbnail" style="max-width: 120px;"/>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </td>
+            </tr>
+
+            <tr>
+                <th><?= /** @noEscape */ __('Full Address:') ?></th>
+                <td><?= $escaper->escapeHtml($customerProfile->getFullAddress()); ?></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fieldset-wrapper">
+        <div class="fieldset-wrapper-title">
+            <span class="title"><?= /** @noEscape */ __('Customer Profile') ?></span>
+        </div>
+
+        <table class="admin__table-secondary">
+            <tbody>
+            <tr>
+                <th><?= /** @noEscape */ __('Short Description:') ?></th>
+                <td><?= $escaper->escapeHtml($customerProfile->getShortDescription()); ?></td>
+            </tr>
+
+            <tr>
+                <th><?= /** @noEscape */ __('Description:') ?></th>
+                <td><?= $escaper->escapeHtml($customerProfile->getDescription()); ?></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fieldset-wrapper">
+        <div class="fieldset-wrapper-title">
+            <span class="title"><?= /** @noEscape */ __('Social Media Links'); ?></span>
+        </div>
+
+        <table class="admin__table-secondary">
+            <tbody>
+            <?php
+            $socialProfiles = json_decode($customerProfile->getSocialMediaLinks() ?? '', true) ?? [];
+            ?>
+            <?php foreach ($socialProfiles as $platform => $link): ?>
+                <tr>
+                    <th><?= $escaper->escapeHtml($platform); ?>:</th>
+                    <td><?= $escaper->escapeHtml($link); ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fieldset-wrapper">
+        <div class="fieldset-wrapper-title">
+            <span class="title"><?= /** @noEscape */ __('Certificates') ?></span>
+        </div>
+
+        <table class="admin__table-secondary">
+            <tbody>
+            <?php
+            $certificates = json_decode($customerProfile->getCertificates() ?? '', true) ?? [];
+            ?>
+            <?php foreach ($certificates as $certificate => $count): ?>
+                <tr>
+                    <th>
+                        <?= $escaper->escapeHtml($certificate); ?>:
+                        <strong><?= $escaper->escapeHtml($count); ?></strong>
+                    </th>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fieldset-wrapper">
+        <div class="fieldset-wrapper-title">
+            <span class="title"><?= /** @noEscape */ __('Services Offered') ?></span>
+        </div>
+
+        <table class="admin__table-secondary">
+            <tbody>
+            <?php
+            $services = json_decode($customerProfile->getServices() ?? '', true) ?? [];
+            ?>
+            <?php foreach ($services as $service): ?>
+                <tr>
+                    <th>
+                        <?= /** @noEscape */ $escaper->escapeHtml($service); ?>
+                    </th>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fieldset-wrapper">
+        <div class="fieldset-wrapper-title">
+            <span class="title"><?= /** @noEscape */ __('PSL Profile Status:') ?></span>
+        </div>
+        <table class="admin__table-secondary">
+            <tbody>
+                <tr>
+                    <th id="profile-status">
+                        <?= /** @noEscape */ $customerProfile->getProfileStatusLabel(); ?>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="fieldset-wrapper">
+        <div class="admin__field-control text-center mt-4">
+            <button type="button" class="action" id="reject-profile-btn">
+                <?= /** @noEscape */ __('Disapprove Profile'); ?>
+            </button>
+            <button type="button" class="action-primary" id="approve-profile-btn">
+                <?= /** @noEscape */ __('Approve Profile'); ?>
+            </button>
+        </div>
+        <div id="profile-action-status" style="display: none; margin-top: 20px; padding: 10px; border: 1px silver;">
+            <div data-ui-id="profile-action-message"></div>
+        </div>
+    </div>
+
+    <div id="reject-modal" style="display:none;">
+        <div class="modal-body-content">
+            <div class="admin__field">
+                <label class="admin__field-label" for="rejection-reason-text">
+                    <?= /** @noEscape */ __('Disapproval Reason') ?>
+                </label>
+                <div class="admin__field-control">
+                    <textarea
+                        id="rejection-reason-text"
+                        name="rejection_reason"
+                        class="admin__control-textarea"
+                        rows="5"
+                        required></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //TODO - i forgot how to initialize Ui Components in a TAB ^__^
+    require([
+        'jquery',
+        'qoliberPslProfileActions'
+    ], function ($, profileActions) {
+        'use strict';
+
+        $('body').on('contentUpdated', '#psl-profile-container', function() {
+            new profileActions({
+                element: '#psl-profile-container',
+                profileId: <?= /** @noEscape */ (int)$customerProfile->getProfileId() ?>,
+                customerId: <?= /** @noEscape */ (int)$block->getRequest()->getParam('id') ?>,
+                ajaxUrl: '<?= $escaper->escapeUrl($block->getUrl('psl/customer/processProfilePost')) ?>',
+                returnUrl: '<?= $escaper->escapeUrl($block->getUrl('customer/index/index')) ?>'
+            });
+        });
+
+        $('#psl-profile-container').trigger('contentUpdated');
+    });
+</script>

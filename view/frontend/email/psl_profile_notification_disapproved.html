@@ -1,0 +1,16 @@
+<!--@subject {{trans "Your PSL profile has been: %status" status=$status}} @-->
+<!--@vars {
+"var status|raw": "Status",
+"var message|raw": "Rejection Message"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p>{{trans "Your PSL profile has been: <strong>%status</strong>" status=$status|raw}}</p>
+<p>{{trans "Rejection reason:"}}</p>
+<p>
+    {{var message|raw}}
+</p>
+
+{{template config_path="design/email/footer_template"}}
+
