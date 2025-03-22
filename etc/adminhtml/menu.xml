@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+/**
+ * Created by Qoliber
+ *
+ * @category    Qoliber
+ * @package     Qoliber_Psl
+ * @author      Jakub Winkler <jwinkler@qoliber.com>
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Qoliber_Psl::menu"
+             translate="title"
+             title="Profesional Service Listing"
+             module="Qoliber_Psl"
+             sortOrder="5050"
+             resource="Qoliber_Psl::config"
+             parent="Qoliber_Core::menu"
+             />
+
+        <add id="Qoliber_Psl::config"
+             title="Configuration"
+             module="Qoliber_Psl"
+             sortOrder="30"
+             action="adminhtml/system_config/edit/section/qoliber_psl"
+             resource="Qoliber_Psl::config"
+             parent="Qoliber_Psl::menu"/>
+    </menu>
+</config>

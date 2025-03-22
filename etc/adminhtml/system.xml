@@ -13,8 +13,8 @@
     <system>
         <section id="qoliber_psl" translate="label" sortOrder="70" showInDefault="1">
             <class>separator-top</class>
-            <label>Membership Settings</label>
-            <tab>customer</tab>
+            <label>PSL Settings</label>
+            <tab>qoliber</tab>
             <resource>Qoliber_Psl::config</resource>
             <group id="general" translate="label" sortOrder="10" showInDefault="1">
                 <label>General Configuration</label>
