@@ -37,8 +37,14 @@ class CreateOpenSearchIndex implements DataPatchInterface
     public function apply(): CreateOpenSearchIndex
     {
         /** @var \Magento\OpenSearch\Model\OpenSearch $client */
-        $client = $this->clientResolver->create();
-
+        try {
+            $client = $this->clientResolver->create();
+            if (!$client) {
+                return $this;
+            }
+        } catch (\Exception $e) {
+            return $this;
+        }
         if ($client->getOpenSearchClient()->indices()->exists(
             ['index' => $this->scopeConfig->getValue('qoliber_psl/opensearch/index')]
         )) {
