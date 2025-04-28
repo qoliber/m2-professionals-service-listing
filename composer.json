@@ -1,13 +1,13 @@
 {
     "name": "qoliber/m2-professionals-service-listing",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "require": {
         "qoliber/core": "*"
     },
     "source": {
         "type": "git",
         "url": "git@github.com:qoliber/m2-professionals-service-listing",
-        "reference": "master"
+        "reference": "main"
     },
     "authors": [
         {
