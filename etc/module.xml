@@ -12,8 +12,10 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
     <module name="Qoliber_Psl">
         <sequence>
+            <module name="Aheadworks_Sarp2" />
             <module name="Magento_Backend" />
             <module name="Magento_Customer" />
+            <module name="Qoliber_Core" />
         </sequence>
     </module>
 </config>

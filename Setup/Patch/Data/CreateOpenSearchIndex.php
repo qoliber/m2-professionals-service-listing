@@ -14,8 +14,6 @@ namespace Qoliber\Psl\Setup\Patch\Data;
 use Magento\AdvancedSearch\Model\Client\ClientResolver;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
-use OpenSearch\Client;
-use OpenSearch\ClientBuilder;
 
 class CreateOpenSearchIndex implements DataPatchInterface
 {
@@ -36,21 +34,20 @@ class CreateOpenSearchIndex implements DataPatchInterface
      */
     public function apply(): CreateOpenSearchIndex
     {
-        /** @var \Magento\OpenSearch\Model\OpenSearch $client */
         try {
             $client = $this->clientResolver->create();
-            if (!$client) {
-                return $this;
-            }
         } catch (\Exception $e) {
             return $this;
         }
+
+        // @phpstan-ignore-next-line
         if ($client->getOpenSearchClient()->indices()->exists(
             ['index' => $this->scopeConfig->getValue('qoliber_psl/opensearch/index')]
         )) {
             return $this;
         }
 
+        // @phpstan-ignore-next-line
         $client->getOpenSearchClient()->indices()->create([
             'index' => $this->scopeConfig->getValue('qoliber_psl/opensearch/index'),
             'body' => [

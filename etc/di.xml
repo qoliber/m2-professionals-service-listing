@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
 /**
  * Created by Qoliber
@@ -20,16 +20,17 @@
         <plugin name="qoliber_psl_customer_profile" type="Qoliber\Psl\Plugin\Customer\PslProfile" />
     </type>
 
-    <type name="Magento\Customer\Api\CustomerRepositoryInterface">
-        <arguments>
-            <argument name="searchFactory"
-                      xsi:type="object">Magento\OpenSearch\Model\Client\OpenSearchFactory</argument>
-        </arguments>
-    </type>
-
     <type name="Qoliber\Psl\Api\ProfileRepositoryInterface">
         <plugin name="qoliber_psl_opensearch_sync"
                 type="Qoliber\Psl\Plugin\OpenSearchProfileSync"
                 sortOrder="10"/>
+    </type>
+
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="qoliber_psl_sync_profiles" xsi:type="object">Qoliber\Psl\Console\Command\SyncProfiles</item>
+            </argument>
+        </arguments>
     </type>
 </config>

@@ -27,9 +27,6 @@ interface ProfileInterface extends ExtensibleDataInterface
     /** @var int */
     public const STATUS_SUSPENDED = 4;
 
-    /** @var int  */
-    public const STATUS_NOT_PUBLISHED = 5;
-
     /** @var string Profile ID field */
     public const PROFILE_ID = 'profile_id';
 

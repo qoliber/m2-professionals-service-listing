@@ -1,6 +1,6 @@
 {
     "name": "qoliber/m2-professionals-service-listing",
-    "version": "1.0.4",
+    "version": "1.1.0",
     "require": {
         "qoliber/core": "*"
     },

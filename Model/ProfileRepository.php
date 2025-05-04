@@ -19,7 +19,6 @@ use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Qoliber\Psl\Api\Data\ProfileInterface;
-use Qoliber\Psl\Api\Data\ProfileInterfaceFactory;
 use Qoliber\Psl\Api\Data\ProfileSearchResultsInterface;
 use Qoliber\Psl\Api\Data\ProfileSearchResultsInterfaceFactory;
 use Qoliber\Psl\Api\ProfileRepositoryInterface;

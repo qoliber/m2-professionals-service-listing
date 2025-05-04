@@ -108,7 +108,7 @@ class ProfilePost implements HttpPostActionInterface
 
         if (isset($profilePicture) && $profilePicture['error'] !== UPLOAD_ERR_NO_FILE) {
             $uploader = $this->uploaderFactory->create(['fileId' => 'logo']);
-            $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png', 'svg']);
+            $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png', 'svg', 'webp']);
             $uploader->setAllowRenameFiles(true);
             $uploader->setFilesDispersion(false);
 
@@ -135,6 +135,7 @@ class ProfilePost implements HttpPostActionInterface
         unset($params['status']); // just in case some joker forces their status ;-)
 
         $customerProfile = $this->profileRepository->getByCustomerId($customerId);
+
         if ($customerProfile->getProfileId() === null) {
             $customerProfile->setCustomerId($customerId);
         }
@@ -147,7 +148,9 @@ class ProfilePost implements HttpPostActionInterface
         if (!empty($params['remove_logo'])) {
             $params['logo'] = "";
         } else {
-            $params['logo'] ??= $imagePath;
+            if ($imagePath) {
+                $params['logo'] = $imagePath;
+            }
         }
 
         if ($customerProfile->getStatus() === 0) {

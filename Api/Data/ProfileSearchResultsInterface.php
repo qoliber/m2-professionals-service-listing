@@ -20,7 +20,7 @@ interface ProfileSearchResultsInterface extends SearchResultsInterface
      *
      * @return \Qoliber\Psl\Api\Data\ProfileInterface[]
      */
-    public function getItems();
+    public function getItems(): array;
 
     /**
      * Set Items

@@ -13,7 +13,7 @@
     <menu>
         <add id="Qoliber_Psl::menu"
              translate="title"
-             title="Profesional Service Listing"
+             title="Professional Service Listing"
              module="Qoliber_Psl"
              sortOrder="5050"
              resource="Qoliber_Psl::config"
