@@ -7,7 +7,7 @@
  * @package     Qoliber_Psl
  * @author      Jakub Winkler <jwinkler@qoliber.com>
  */
- -->
+-->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
@@ -18,12 +18,13 @@
             <resource>Qoliber_Psl::config</resource>
             <group id="general" translate="label" sortOrder="10" showInDefault="1">
                 <label>General Configuration</label>
-                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1">
+                <field id="enabled" translate="label comment" type="select" sortOrder="10"
+                       showInDefault="1">
                     <label>Enable Professional Service Listing</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="opensearch" translate="label" sortOrder="10" showInDefault="1">
+            <group id="opensearch" translate="label" sortOrder="20" showInDefault="1">
                 <label>OpenSearch Setting</label>
                 <field id="index" translate="label comment" type="text" sortOrder="10" showInDefault="1">
                     <label>OpenSearch Index Name</label>
@@ -95,6 +96,15 @@
                 <field id="Platinum" translate="label comment" type="select" sortOrder="200" showInDefault="1">
                     <label>Platinum Partnership Customer Group</label>
                     <source_model>Magento\Customer\Model\Config\Source\Group</source_model>
+                </field>
+            </group>
+            <group id="google_maps" translate="label" type="text" sortOrder="20"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Google Maps Configuration</label>
+                <field id="api_key" translate="label comment" type="text" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Google Maps API Key</label>
+                    <comment>Enter your Google Maps API key for geocoding functionality</comment>
                 </field>
             </group>
         </section>

@@ -6,285 +6,688 @@
  * @package     Qoliber_Psl
  * @author      Jakub Winkler <jwinkler@qoliber.com>
  */
+//phpcs:disable Generic.Files.LineLength
 
-/** @var $block \Magento\Backend\Block\Template */
+/** @var $block \Qoliber\Psl\Block\Customer\Profile\PslProfile */
 /** @var \Magento\Framework\Escaper $escaper */
-
 /** @var \Qoliber\Psl\ViewModel\Details $detailsViewModel */
+/** @var \Qoliber\Psl\ViewModel\PslProfileFieldsSubscription $subscriptionViewModel */
+/** @var \Qoliber\Psl\ViewModel\GoogleMaps $googleMapsViewModel */
+
 $detailsViewModel = $block->getData('details_view_model');
+$subscriptionViewModel = $block->getData('subscription_view_model');
+$googleMapsViewModel = $block->getData('google_maps_view_model');
+
 $customerProfile = $detailsViewModel->getCustomerPslProfile();
 $countryCollection = $detailsViewModel->getCountryCollection();
 
-$platforms = implode(
-    ',',
-    array_map(fn($item) => "'" . $item['social_media'] . "'", $detailsViewModel->getSocialMedia())
-);
-
-$certificates = implode(
-    ',',
-    array_map(fn($item) => "'" . $item['certificate'] . "'", $detailsViewModel->getCertificates())
-);
-
+$platforms = implode(',', array_map(fn ($item) => "'" . $item['social_media'] . "'", $detailsViewModel->getSocialMedia()));
+$certificates = implode(',', array_map(fn ($item) => "'" . $item['certificate'] . "'", $detailsViewModel->getCertificates()));
 $servicesArray = $detailsViewModel->getServices();
-usort($servicesArray, fn($a, $b) => strcmp($a['service'], $b['service']));
-$services = implode(',', array_map(fn($item) => "'" . $item['service'] . "'", $servicesArray));
+usort($servicesArray, fn ($a, $b) => strcmp($a['service'], $b['service']));
+$services = implode(',', array_map(fn ($item) => "'" . $item['service'] . "'", $servicesArray));
 ?>
 <form method="post"
       action="<?= /** @noEscape */ $escaper->escapeUrl('/psl/customer/profilePost') ?>"
       enctype="multipart/form-data"
 >
     <?= /** @noEscape */ $block->getBlockHtml('formkey') ?>
-    <div class="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
-            <?= /** @noEscape */ __('Proffesional Service Listing Profile');?></h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-600">
-                    <?= /** @noEscape */ __('Company Name');?></label>
-                <input type="text" placeholder="<?= /** @noEscape */ __('Company Name');?>" class="form-input"
-                       name="company_name" value="<?= /** @noEscape */ $customerProfile->getCompanyName(); ?>" />
+    <div class="max-w-6xl mx-auto space-y-6">
+        <!-- Basic Information (Always Available) -->
+        <div class="bg-blue-50 shadow-lg rounded-lg p-6 border-t-4 border-blue-200 relative">
+            <div class="absolute top-0 right-0">
+                <div class="bg-green-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                    <?= /** @noEscape */ __('Included In Free Profile'); ?>
+                </div>
             </div>
-
-            <div>
-                <label for="city" class="block text-sm font-medium text-gray-600">
-                    <?= /** @noEscape */ __('City');?></label>
-                <input type="text" placeholder="<?= /** @noEscape */ __('City');?>" class="form-input"
-                       name="city" value="<?= /** @noEscape */ $customerProfile->getCity(); ?>" />
-            </div>
-
-            <div>
-                <label for="country" class="block text-sm font-medium text-gray-600">
-                    <?= /** @noEscape */ __('Country'); ?></label>
-                <select name="country" class="form-input" required>
-                    <?php foreach ($countryCollection as $country): ?>
-                        <option value="<?= /** @noEscape */ $country['label']; ?>" <?=
-                        $country['label'] === $customerProfile->getCountry()
-                            ? 'selected'
-                            : ''; ?>><?= /** @noEscape */ $country['label']; ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div>
-                <label for="url" class="block text-sm font-medium text-gray-600">
-                    <?= /** @noEscape */ __('Homepage URL'); ?></label>
-                <input type="url" class="form-input" placeholder="<?= /** @noEscape */ __('Homepage URL');?>"
-                       name="homepage_url" value="<?= /** @noEscape */ $customerProfile->getHomepageUrl(); ?>"/>
-            </div>
-
-            <div>
-                <label for="logo" class="block text-sm font-medium text-gray-600">
-                    <?= /** @noEscape */ __('Logo / Profile Pic'); ?></label>
-                <?php if ($logo = $customerProfile->getLogo()): ?>
-                    <div class="mb-2">
-                        <img src="<?= $escaper->escapeUrl($detailsViewModel->getPslPicture($logo)); ?>"
-                             alt="Current Logo" class="max-w-[250px] h-auto rounded-lg p-1 border border-gray-300" />
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">
+                <?= /** @noEscape */ __('Basic Information'); ?>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-yellow-100 border-l-4 border-yellow-600 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-yellow-600" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-yellow-800 mb-1">
+                                <?= /** @noEscape */ __('Important Notice:'); ?>
+                            </p>
+                            <ul class="text-sm text-yellow-700 list-disc list-inside space-y-1">
+                                <li><?= /** @noEscape */ __('It may take a few moments for your changes to be reflected on the frontend after saving.'); ?></li>
+                                <li><?= /** @noEscape */ __('After purchasing new features, please allow some time for payment processing and feature activation.'); ?></li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" id="remove_logo" name="remove_logo" value="1"
-                               class="form-checkbox h-5 w-5 text-red-600">
-                        <label for="remove_logo" class="text-sm text-gray-700">
-                            <?= /** @noEscape */ __('Remove Image'); ?></label>
+                </div>
+                <div class="<?= $customerProfile->getStatus() ? 'bg-green-100 border-l-4 border-green-600' : 'bg-red-100 border-l-4 border-red-600' ?> p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <?php if ($customerProfile->getStatus()): ?>
+                                <svg class="h-5 w-5 text-green-600" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                            <?php else: ?>
+                                <svg class="h-5 w-5 text-red-600" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                </svg>
+                            <?php endif; ?>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium <?= $customerProfile->getStatus() ? 'text-green-800' : 'text-red-800' ?> mb-1">
+                                <?= /** @noEscape */ __('Profile Status:'); ?>
+                            </p>
+                            <p class="text-sm <?= $customerProfile->getStatus() ? 'text-green-700' : 'text-red-700' ?>">
+                                <?php if ($customerProfile->getStatus()): ?>
+                                    <?= /** @noEscape */ __('Your profile is approved and visible to customers.'); ?>
+                                <?php else: ?>
+                                    <?= /** @noEscape */ __('Your profile is pending approval. It will be reviewed by our team.'); ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
                     </div>
-                <?php endif; ?>
-                <input type="file" class="form-input" name="logo" />
+                </div>
             </div>
-
-            <div>
-                <label for="full_address" class="block text-sm font-medium text-gray-600">
-                    <?= /** @noEscape */ __('Full Address'); ?></label>
-                <textarea placeholder="<?= /** @noEscape */ __('Full Address'); ?>" class="form-input"
-                          name="full_address"><?= /** @noEscape */ $customerProfile->getFullAddress(); ?></textarea>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-blue-700">
+                        <?= /** @noEscape */ __('Company Name'); ?></label>
+                    <input type="text" class="form-input" name="company_name"
+                           value="<?= /** @noEscape */ $customerProfile->getCompanyName(); ?>" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-blue-700">
+                        <?= /** @noEscape */ __('City'); ?></label>
+                    <input type="text" class="form-input" name="city"
+                           value="<?= /** @noEscape */ $customerProfile->getCity(); ?>" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-blue-700">
+                        <?= /** @noEscape */ __('Country'); ?></label>
+                    <select name="country" class="form-input" required>
+                        <?php foreach ($countryCollection as $country): ?>
+                            <option value="<?= /** @noEscape */ $country['label']; ?>"
+                                <?= $country['label'] === $customerProfile->getCountry() ? 'selected' : ''; ?>>
+                                <?= /** @noEscape */ $country['label']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-600">
-                    <?= /** @noEscape */ __('Latitude'); ?></label>
-                <input type="number" class="form-input" placeholder="<?= /** @noEscape */ __('Latitude'); ?>"
-                       name="latitude" step=any value="<?= /** @noEscape */ $customerProfile->getLatitude(); ?>" />
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-600">
-                    <?= /** @noEscape */ __('Longitude'); ?></label>
-                <input type="number" class="form-input" placeholder="<?= /** @noEscape */ __('Longitude'); ?>"
-                       name="longitude" step=any value="<?= /** @noEscape */ $customerProfile->getLongitude(); ?>" />
-            </div>
-
-            <div class="col-span-2">
-                <label for="short_description" class="block text-sm font-medium text-gray-600"><?=
-                    /** @noEscape */ __('Short Description <strong>(no HTML content allowed)</strong>');?></label>
-                <textarea class="form-input" placeholder="<?= /** @noEscape */ __('Short Description');?>"
-                          rows="5" name="short_description"
-                ><?= /** @noEscape */ $customerProfile->getShortDescription(); ?></textarea>
-            </div>
-
-            <div class="col-span-2">
-                <label for="description" class="block text-sm font-medium text-gray-600"><?=
-                    /** @noEscape */ __('Description');?></label>
-                <textarea class="form-input" placeholder="<?= /** @noEscape */ __('Description');?>"
-                          rows="10" name="description"
-                ><?= /** @noEscape */ $customerProfile->getDescription(); ?></textarea>
+            <div class="mt-4 bg-blue-100 p-4 rounded-lg">
+                <p class="text-sm text-blue-700">
+                    <svg class="w-5 h-5 inline-block mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <?= /** @noEscape */ __('These are your basic profile details. They are always visible and help customers find your business.'); ?>
+                </p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <div class="col-span-1" x-data="{
-                socialMedia: <?= /** @noEscape */ $detailsViewModel->formatJsonOutputForAlpineJS(
-                    $customerProfile->getSocialMediaLinks() ?? ''
-                );?>,
-                platforms: [<?= /** @noEscape */ $platforms ?>],
-                enabledPlatforms: <?= /** @noEscape */ $detailsViewModel->getEnabledValues(
-                    $customerProfile->getSocialMediaLinks() ?? ''
-                );?>,
-                toggleSocialMedia(platform) {
-                    if (this.enabledPlatforms.includes(platform)) {
-                        this.enabledPlatforms = this.enabledPlatforms.filter(p => p !== platform); // Disable platform
-                    } else {
-                        this.enabledPlatforms.push(platform); // Enable platform
-                    }
-                }
-            }">
-                <h2 class="block text-2xl font-semibold text-gray-800 mb-4">
-                    <?= /** @noEscape */ __('Social Media Links') ?>
-                </h2>
-
-                <template x-for="platform in platforms" :key="platform">
-                    <div class="flex items-center gap-2 mb-2">
-                        <!-- Checkbox to enable/disable -->
-                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600"
-                               :id="'social-enable-' + platform"
-                               @change="toggleSocialMedia(platform)"
-                               :checked="enabledPlatforms.includes(platform)" />
-
-                        <label class="text-sm font-medium text-gray-800 w-[120px]"
-                               :for="'social-enable-' + platform" x-text="platform"></label>
-
-                        <div class="w-full">
-                            <label class="block text-sm font-medium text-gray-600" :for="'social-url-' + platform">
-                                <?= /** @noEscape */ __('Profile URL'); ?>
-                            </label>
-                            <input type="url"
-                                   class="form-input w-full p-2 border rounded-lg bg-gray-200 text-gray-700"
-                                   :id="'social-url-' + platform"
-                                   x-model="socialMedia[platform]"
-                                   :name="'social_media_links[' + platform + ']'"
-                                   placeholder="Enter Profile URL"
-                                   :disabled="!enabledPlatforms.includes(platform)"
-                                   :class="{
-                                        'bg-gray-200 text-gray-400': !enabledPlatforms.includes(platform),
-                                        'bg-white text-black': enabledPlatforms.includes(platform)
-                                   }"
-                                   required
-                            />
+        <!-- Logo and Location Row -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <!-- Company Logo Section -->
+            <div class="md:col-span-4 bg-amber-50 shadow-lg rounded-lg p-6 relative">
+                <div class="absolute top-0 right-0">
+                    <?php if ($subscriptionViewModel->hasActiveSubscription('logo')): ?>
+                        <div class="bg-green-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                            <?= /** @noEscape */ __('Active until: <strong>%1</strong>', $subscriptionViewModel->getSubscriptionEndDate('logo')); ?>
                         </div>
+                    <?php else: ?>
+                        <div class="bg-red-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                            <?= /** @noEscape */ __('Feature not active'); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-semibold text-amber-800">
+                        <?= /** @noEscape */ __('Company Logo'); ?>
+                    </h2>
+                    <?php if (!$subscriptionViewModel->hasActiveSubscription('logo')): ?>
+                        <div class="flex flex-col items-end">
+                            <a href="<?= $escaper->escapeUrl($block->getFeatureProductUrl('logo')); ?>"
+                               class="inline-flex items-center px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                <?= /** @noEscape */ __('Activate Logo Feature'); ?>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <?php if (!$subscriptionViewModel->hasActiveSubscription('logo')): ?>
+                    <div class="bg-amber-100 border-l-4 border-amber-500 p-4 mb-4">
+                        <p class="text-amber-700">
+                            <?= /** @noEscape */ __('Your logo will not be visible on the frontend until you activate this feature.'); ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">
+                        <?= /** @noEscape */ __('Logo / Profile Pic'); ?></label>
+                    <?php if ($logo = $customerProfile->getLogo()): ?>
+                        <div class="mb-2">
+                            <img src="<?= $escaper->escapeUrl($detailsViewModel->getPslPicture($logo)); ?>"
+                                 alt="Current Logo" class="max-w-[200px] h-auto rounded-lg p-1 border border-amber-300" />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="remove_logo" name="remove_logo" value="1"
+                                   class="form-checkbox h-5 w-5 text-amber-600">
+                            <label for="remove_logo" class="text-sm text-gray-700">
+                                <?= /** @noEscape */ __('Remove Image'); ?></label>
+                        </div>
+                    <?php endif; ?>
+                    <input type="file" class="form-input" name="logo" />
+                </div>
+                <div class="mt-4 bg-amber-50 p-4 rounded-lg">
+                    <p class="text-sm text-amber-700">
+                        <svg class="w-5 h-5 inline-block mr-2 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <?= /** @noEscape */ __('Upload your company logo to make your profile more recognizable and professional.'); ?>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Homepage URL Section -->
+            <div class="md:col-span-4 bg-blue-50 shadow-lg rounded-lg p-6 relative">
+                <div class="absolute top-0 right-0">
+                    <?php if ($subscriptionViewModel->hasActiveSubscription('backlink')): ?>
+                        <div class="bg-green-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                            <?= /** @noEscape */ __('Active until: <strong>%1</strong>', $subscriptionViewModel->getSubscriptionEndDate('backlink')); ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="bg-red-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                            <?= /** @noEscape */ __('Feature not active'); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-semibold text-blue-800">
+                        <?= /** @noEscape */ __('Homepage URL'); ?>
+                    </h2>
+                    <?php if (!$subscriptionViewModel->hasActiveSubscription('backlink')): ?>
+                        <div class="flex flex-col items-end">
+                            <a href="<?= $escaper->escapeUrl($block->getFeatureProductUrl('backlink')); ?>"
+                               class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                <?= /** @noEscape */ __('Activate Backlink Feature'); ?>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <?php if (!$subscriptionViewModel->hasActiveSubscription('backlink')): ?>
+                    <div class="bg-blue-100 border-l-4 border-blue-500 p-4 mb-4">
+                        <p class="text-blue-700">
+                            <?= /** @noEscape */ __('Your homepage URL will not be visible on the frontend until you activate this feature.'); ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">
+                        <?= /** @noEscape */ __('Website URL'); ?></label>
+                    <input type="url" class="form-input" name="homepage_url"
+                           value="<?= /** @noEscape */ $customerProfile->getHomepageUrl(); ?>"
+                           placeholder="https://www.example.com" />
+                </div>
+                <div class="mt-4 bg-blue-50 p-4 rounded-lg">
+                    <p class="text-sm text-blue-700">
+                        <svg class="w-5 h-5 inline-block mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <?= /** @noEscape */ __('Add your company website URL to drive traffic to your site.'); ?>
+                    </p>
+                </div>
+            </div>
+
+            <!-- GEO Location Section -->
+            <div class="md:col-span-4 bg-green-50 shadow-lg rounded-lg p-6 relative">
+                <div class="absolute top-0 right-0">
+                    <?php if ($subscriptionViewModel->hasActiveSubscription('geolocation')): ?>
+                        <div class="bg-green-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                            <?= /** @noEscape */ __('Active until: <strong>%1</strong>', $subscriptionViewModel->getSubscriptionEndDate('geolocation')); ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="bg-red-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                            <?= /** @noEscape */ __('Feature not active'); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-semibold text-green-800">
+                        <?= /** @noEscape */ __('GEO Location Information'); ?>
+                    </h2>
+                    <?php if (!$subscriptionViewModel->hasActiveSubscription('geolocation')): ?>
+                        <div class="flex flex-col items-end">
+                            <a href="<?= $escaper->escapeUrl($block->getFeatureProductUrl('geolocation')); ?>"
+                               class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                <?= /** @noEscape */ __('Activate Location Feature'); ?>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <?php if (!$subscriptionViewModel->hasActiveSubscription('geolocation')): ?>
+                    <div class="bg-green-100 border-l-4 border-green-500 p-4 mb-4">
+                        <p class="text-green-700">
+                            <?= /** @noEscape */ __('Your location helps customers find services in their area. Use the detect button for accurate coordinates.'); ?>
+                        </p>
+                    </div>
+                <?php endif; ?>
+                <div>
+                    <div class="mb-4 flex gap-2">
+                        <button type="button"
+                                id="detect-location"
+                                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            <?= /** @noEscape */ __('Detect My Location'); ?>
+                        </button>
+                        <button type="button"
+                                id="get-coordinates"
+                                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                            </svg>
+                            <?= /** @noEscape */ __('Get Coordinates from Address'); ?>
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2 mb-4">
+                        <?= /** @noEscape */ __('Click to automatically fetch coordinates from your current location or based on your address'); ?>
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600">
+                                <?= /** @noEscape */ __('Latitude'); ?></label>
+                            <input type="number" class="form-input" id="latitude" name="latitude" step="any"
+                                   value="<?= /** @noEscape */ $customerProfile->getLatitude(); ?>" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600">
+                                <?= /** @noEscape */ __('Longitude'); ?></label>
+                            <input type="number" class="form-input" id="longitude" name="longitude" step="any"
+                                   value="<?= /** @noEscape */ $customerProfile->getLongitude(); ?>" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 bg-green-50 p-4 rounded-lg">
+                    <p class="text-sm text-green-700">
+                        <svg class="w-5 h-5 inline-block mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <?= /** @noEscape */ __('Your location helps customers find services in their area. Use the detect button for accurate coordinates.'); ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page Features Section -->
+        <div class="bg-blue-50 shadow-lg rounded-lg p-6 relative">
+            <div class="absolute top-0 right-0">
+                <?php if ($subscriptionViewModel->hasActiveSubscription('content')): ?>
+                    <div class="bg-green-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                        <?= /** @noEscape */ __('Active until: <strong>%1</strong>', $subscriptionViewModel->getSubscriptionEndDate('content')); ?>
+                    </div>
+                <?php else: ?>
+                    <div class="bg-red-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                        <?= /** @noEscape */ __('Feature not active'); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold text-blue-800">
+                    <?= /** @noEscape */ __('Enhanced Profile Content'); ?>
+                </h2>
+                <?php if (!$subscriptionViewModel->hasActiveSubscription('content')): ?>
+                    <div class="flex flex-col items-end">
+                        <a href="<?= $escaper->escapeUrl($block->getFeatureProductUrl('content')); ?>"
+                           class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <?= /** @noEscape */ __('Activate Enhanced Profile'); ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <?php if (!$subscriptionViewModel->hasActiveSubscription('content')): ?>
+                <div class="bg-blue-100 border-l-4 border-blue-500 p-4 mb-4">
+                    <p class="text-blue-700">
+                        <?= /** @noEscape */ __('Your enhanced profile content will not be visible on the frontend until you activate this feature.'); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+            <div class="space-y-4">
+                <div class="bg-blue-100 p-4 rounded-lg mb-6">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-6 h-6 text-blue-700 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <div>
+                            <p class="text-blue-700 font-medium mb-1"><?= /** @noEscape */ __('Markdown Supported'); ?></p>
+                            <p class="text-sm text-blue-600"><?= /** @noEscape */ __('These fields support Markdown formatting:'); ?></p>
+                            <div class="mt-2 text-sm text-blue-600 grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <div>
+                                    <code class="bg-blue-200 px-1 rounded">**bold**</code> → <strong>bold</strong>
+                                </div>
+                                <div>
+                                    <code class="bg-blue-200 px-1 rounded">*italic*</code> → <em>italic</em>
+                                </div>
+                                <div>
+                                    <code class="bg-blue-200 px-1 rounded"># Heading</code> → heading
+                                </div>
+                                <div>
+                                    <code class="bg-blue-200 px-1 rounded">- list item</code> → bullet list
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">
+                        <?= /** @noEscape */ __('Full Address'); ?></label>
+                    <textarea class="form-input" name="full_address"><?= /** @noEscape */ $customerProfile->getFullAddress(); ?></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">
+                        <?= /** @noEscape */ __('Teaser Text'); ?></label>
+                    <textarea class="form-input" name="short_description" rows="3"><?= /** @noEscape */ $customerProfile->getShortDescription(); ?></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600">
+                        <?= /** @noEscape */ __('Full Description'); ?></label>
+                    <textarea class="form-input" name="description" rows="6"><?= /** @noEscape */ $customerProfile->getDescription(); ?></textarea>
+                </div>
+            </div>
+            <div class="mt-4 bg-blue-50 p-4 rounded-lg">
+                <p class="text-sm text-blue-700">
+                    <svg class="w-5 h-5 inline-block mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <?= /** @noEscape */ __('Enhance your profile with detailed descriptions. Use Markdown formatting to make your content stand out.'); ?>
+                </p>
+            </div>
+        </div>
+
+        <!-- Social Media Section -->
+        <div class="bg-purple-50 shadow-lg rounded-lg p-6 relative" x-data="{
+            socialMedia: <?= /** @noEscape */ $detailsViewModel->formatJsonOutputForAlpineJS(
+                $customerProfile->getSocialMediaLinks() ?? ''
+            );?>,
+            platforms: [<?= /** @noEscape */ $platforms ?>],
+            enabledPlatforms: <?= /** @noEscape */ $detailsViewModel->getEnabledValues(
+                $customerProfile->getSocialMediaLinks() ?? ''
+            );?>,
+            toggleSocialMedia(platform) {
+                if (this.enabledPlatforms.includes(platform)) {
+                    this.enabledPlatforms = this.enabledPlatforms.filter(p => p !== platform);
+                } else {
+                    this.enabledPlatforms.push(platform);
+                }
+            }
+        }">
+            <div class="absolute top-0 right-0">
+                <?php if ($subscriptionViewModel->hasActiveSubscription('social')): ?>
+                    <div class="bg-green-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                        <?= /** @noEscape */ __('Active until: <strong>%1</strong>', $subscriptionViewModel->getSubscriptionEndDate('social')); ?>
+                    </div>
+                <?php else: ?>
+                    <div class="bg-red-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                        <?= /** @noEscape */ __('Feature not active'); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold text-purple-800">
+                    <?= /** @noEscape */ __('Social Media Links'); ?>
+                </h2>
+                <?php if (!$subscriptionViewModel->hasActiveSubscription('social')): ?>
+                    <div class="flex flex-col items-end">
+                        <a href="<?= $escaper->escapeUrl($block->getFeatureProductUrl('social')); ?>"
+                           class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <?= /** @noEscape */ __('Activate Social Media'); ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <?php if (!!$subscriptionViewModel->hasActiveSubscription('social')): ?>
+                <div class="bg-purple-100 border-l-4 border-purple-500 p-4 mb-4">
+                    <p class="text-purple-700">
+                        <?= /** @noEscape */ __('Your social media links will not be visible on the frontend until you activate this feature.'); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                <template x-for="platform in platforms" :key="platform">
+                    <div class="grid grid-cols-[180px_1fr] items-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" class="form-checkbox h-5 w-5 text-purple-600 my-0"
+                                   :id="'social-enable-' + platform"
+                                   @change="toggleSocialMedia(platform)"
+                                   :checked="enabledPlatforms.includes(platform)" />
+                            <label class="text-sm font-medium text-gray-800 leading-5 my-0 whitespace-nowrap"
+                                   :for="'social-enable-' + platform" x-text="platform"></label>
+                        </div>
+                        <input type="url" class="form-input w-full"
+                               :id="'social-url-' + platform"
+                               x-model="socialMedia[platform]"
+                               :name="'social_media_links[' + platform + ']'"
+                               :class="{
+                                    'bg-gray-200': !enabledPlatforms.includes(platform),
+                                    'text-gray-500': !enabledPlatforms.includes(platform),
+                                    'bg-white': enabledPlatforms.includes(platform)
+                               }"
+                               :placeholder="'Enter ' + platform + ' URL'"
+                        />
                     </div>
                 </template>
             </div>
+            <div class="mt-4 bg-purple-50 p-4 rounded-lg">
+                <p class="text-sm text-purple-700">
+                    <svg class="w-5 h-5 inline-block mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <?= /** @noEscape */ __('Connect with customers across different platforms by linking your social media profiles.'); ?>
+                </p>
+            </div>
+        </div>
 
-
-            <div class="col-span-1" x-data="{
-    companyCertificates: <?= /** @noEscape */ $detailsViewModel->formatJsonOutputForAlpineJS(
-        $customerProfile->getCertificates() ?? ''
-    ); ?>,
-    certificateTypes: [<?= /** @noEscape */ $certificates; ?>],
-    enabledCertificates: <?= /** @noEscape */ $detailsViewModel->getEnabledValues(
-        $customerProfile->getCertificates() ?? ''
-    ); ?>,
-    toggleCertificate(certType) {
-        if (this.enabledCertificates.includes(certType)) {
-            this.enabledCertificates = this.enabledCertificates.filter(c => c !== certType); // Disable certificate
-        } else {
-            this.enabledCertificates.push(certType); // Enable certificate
-        }
-    }
-}">
-                <h2 class="block text-2xl font-semibold text-gray-800 mb-4">
+        <!-- Certificates Section -->
+        <div class="bg-teal-50 shadow-lg rounded-lg p-6 relative" x-data="{
+            certificateTypes: [<?= /** @noEscape */ $certificates ?>],
+            searchQuery: '',
+            companyCertificates: <?= /** @noEscape */ $detailsViewModel->formatJsonOutputForAlpineJS(
+                $customerProfile->getCertificates() ?? ''
+            ); ?>,
+            enabledCertificates: <?= /** @noEscape */ $detailsViewModel->getEnabledValues(
+                $customerProfile->getCertificates() ?? ''
+            ); ?>,
+            toggleCertificate(certificate) {
+                if (this.enabledCertificates.includes(certificate)) {
+                    this.enabledCertificates = this.enabledCertificates.filter(c => c !== certificate);
+                } else {
+                    this.enabledCertificates.push(certificate);
+                }
+            },
+            filterCertificates(certificate) {
+                return this.searchQuery === '' || certificate.toLowerCase().includes(this.searchQuery.toLowerCase());
+            }
+        }">
+            <div class="absolute top-0 right-0">
+                <?php if ($subscriptionViewModel->hasActiveSubscription('certificates')): ?>
+                    <div class="bg-green-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                        <?= /** @noEscape */ __('Active until: <strong>%1</strong>', $subscriptionViewModel->getSubscriptionEndDate('certificates')); ?>
+                    </div>
+                <?php else: ?>
+                    <div class="bg-red-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                        <?= /** @noEscape */ __('Feature not active'); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold text-teal-800">
                     <?= /** @noEscape */ __('Certificates'); ?>
                 </h2>
-
-                <template x-for="certType in certificateTypes" :key="certType">
-                    <div class="flex items-center gap-2 mb-2">
-                        <!-- Checkbox: Enables/disables the certificate -->
-                        <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600"
-                               :id="'cert-enable-' + certType"
-                               @change="toggleCertificate(certType)"
-                               :checked="enabledCertificates.includes(certType)">
-
-                        <label class="text-sm font-medium text-gray-800 w-[200px]"
-                               :for="'cert-enable-' + certType" x-text="certType"></label>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600"
-                                   :for="'cert-count-' + certType">
-                                <?= /** @noEscape */ __('Number of Certificates'); ?>
-                            </label>
-                            <input type="number"
-                                   class="form-input w-[100px] p-2 border rounded-lg bg-gray-200 text-gray-700"
-                                   :id="'cert-count-' + certType"
-                                   x-model="companyCertificates[certType]"
-                                   min="1" placeholder="0"
-                                   :name="'certificates[' + certType + ']'"
-                                   :disabled="!enabledCertificates.includes(certType)"
-                                   :class="{
-                            'bg-gray-200 text-gray-700': !enabledCertificates.includes(certType),
-                            'bg-white text-black': enabledCertificates.includes(certType)
-                       }"
-                                   required
-                            />
-                        </div>
+                <?php if (!$subscriptionViewModel->hasActiveSubscription('certificates')): ?>
+                    <div class="flex flex-col items-end">
+                        <a href="<?= $escaper->escapeUrl($block->getFeatureProductUrl('certificates')); ?>"
+                           class="inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <?= /** @noEscape */ __('Activate Certificates'); ?>
+                        </a>
                     </div>
-                </template>
+                <?php endif; ?>
             </div>
-
-
-            <div class="col-span-2" x-data="{
-                serviceList: [<?= /** @noEscape */ $services; ?>],
-                searchQuery: '',
-                companyServices: <?= /** @noEscape */ $detailsViewModel->formatJsonOutputForAlpineJS(
-                    $customerProfile->getServices() ?? ''
-                ); ?>,
-                enabledServices: <?= /** @noEscape */ $detailsViewModel->getEnabledValues(
-                    $customerProfile->getServices() ?? ''
-                ); ?>,
-                toggleService(service) {
-                    if (this.enabledServices.includes(service)) {
-                        this.enabledServices = this.enabledServices.filter(s => s !== service); // Disable service
-                    } else {
-                        this.enabledServices.push(service); // Enable service
-                    }
-                },
-                filterServices(service) {
-                    return this.searchQuery === '' || service.toLowerCase().includes(this.searchQuery.toLowerCase());
-                }
-            }">
-                <label class="block text-2xl font-semibold text-gray-800 mb-4">
-                    <?= /** @noEscape */ __('Services Offered'); ?>
-                </label>
-
-                <!-- Search Box -->
-                <div class="mb-4">
-                    <input type="text" class="form-input w-full p-2 border rounded-lg"
-                           placeholder="<?= /** @noEscape */ __('Search services...'); ?>" x-model="searchQuery" />
+            <?php if (!!$subscriptionViewModel->hasActiveSubscription('certificates')): ?>
+                <div class="bg-teal-100 border-l-4 border-teal-500 p-4 mb-4">
+                    <p class="text-teal-700">
+                        <?= /** @noEscape */ __('Your certificates will not be visible on the frontend until you activate this feature.'); ?>
+                    </p>
                 </div>
-
-                <!-- Service List -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <template x-for="service in serviceList" :key="service">
-                        <div class="flex items-center gap-2" x-show="filterServices(service)">
-                            <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600"
-                                   :id="'service-enable-' + service"
-                                   @change="toggleService(service)"
-                                   :checked="enabledServices.includes(service)"
-                                   :value="service"
-                                   :name="'services[]'" />
-
-                            <label class="text-sm font-medium text-gray-800"
-                                   :for="'service-enable-' + service" x-text="service"></label>
+            <?php endif; ?>
+            <div class="<?= !!$subscriptionViewModel->hasActiveSubscription('certificates') ? 'opacity-50' : '' ?>">
+                <input type="text" class="form-input w-full mb-4"
+                       placeholder="<?= /** @noEscape */ __('Search certificates...'); ?>"
+                       x-model="searchQuery" />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <template x-for="certType in certificateTypes" :key="certType">
+                        <div class="grid grid-cols-[180px_1fr_120px] items-center gap-4 break-words" x-show="filterCertificates(certType)">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <input type="checkbox"
+                                       class="form-checkbox h-5 w-5 text-teal-600 my-0 flex-shrink-0"
+                                       :id="'cert-enable-' + certType"
+                                       @change="toggleCertificate(certType)"
+                                       :checked="enabledCertificates.includes(certType)"
+                                       />
+                                <label class="text-sm font-medium text-gray-800 leading-5 my-0 break-words"
+                                       :for="'cert-enable-' + certType" x-text="certType"></label>
+                            </div>
+                            <div class="flex items-center min-w-0">
+                                <input type="number"
+                                       class="form-input w-[100px]"
+                                       :id="'cert-count-' + certType"
+                                       x-model="companyCertificates[certType]"
+                                       min="1"
+                                       placeholder="0"
+                                       :name="'certificates[' + certType + ']'"
+                                       :disabled="!enabledCertificates.includes(certType)"
+                                       :class="{
+                                           'bg-gray-200 text-gray-700': !enabledCertificates.includes(certType),
+                                           'bg-white text-black': enabledCertificates.includes(certType)
+                                       }" />
+                                <span class="ml-2 text-sm text-gray-600 break-words">
+                                    <?= /** @noEscape */ __('certificates'); ?>
+                                </span>
+                            </div>
                         </div>
                     </template>
                 </div>
+            </div>
+            <div class="mt-4 bg-teal-50 p-4 rounded-lg">
+                <p class="text-sm text-teal-700">
+                    <svg class="w-5 h-5 inline-block mr-2 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <?= /** @noEscape */ __('Showcase your professional certifications and specify how many of each type you hold.'); ?>
+                </p>
+            </div>
+        </div>
+
+        <!-- Service Badges Section -->
+        <div class="bg-indigo-50 shadow-lg rounded-lg p-6 relative" x-data="{
+            serviceList: [<?= /** @noEscape */ $services; ?>],
+            searchQuery: '',
+            companyServices: <?= /** @noEscape */ $detailsViewModel->formatJsonOutputForAlpineJS(
+                $customerProfile->getServices() ?? ''
+            ); ?>,
+            enabledServices: <?= /** @noEscape */ $detailsViewModel->getEnabledValues(
+                $customerProfile->getServices() ?? ''
+            ); ?>,
+            toggleService(service) {
+                if (this.enabledServices.includes(service)) {
+                    this.enabledServices = this.enabledServices.filter(s => s !== service);
+                } else {
+                    this.enabledServices.push(service);
+                }
+            },
+            filterServices(service) {
+                return this.searchQuery === '' || service.toLowerCase().includes(this.searchQuery.toLowerCase());
+            }
+        }">
+            <div class="absolute top-0 right-0">
+                <?php if ($subscriptionViewModel->hasActiveSubscription('services')): ?>
+                    <div class="bg-green-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                        <?= /** @noEscape */ __('Active until: <strong>%1</strong>', $subscriptionViewModel->getSubscriptionEndDate('services')); ?>
+                    </div>
+                <?php else: ?>
+                    <div class="bg-red-600 text-white px-2 py-1 rounded-tr-lg rounded-bl-lg text-sm">
+                        <?= /** @noEscape */ __('Feature not active'); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-semibold text-indigo-800">
+                    <?= /** @noEscape */ __('Service Badges'); ?>
+                </h2>
+                <?php if (!$subscriptionViewModel->hasActiveSubscription('services')): ?>
+                    <div class="flex flex-col items-end">
+                        <a href="<?= $escaper->escapeUrl($block->getFeatureProductUrl('services')); ?>"
+                           class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <?= /** @noEscape */ __('Activate Service Badges'); ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <?php if (!!$subscriptionViewModel->hasActiveSubscription('service_badges')): ?>
+                <div class="bg-indigo-100 border-l-4 border-indigo-500 p-4 mb-4">
+                    <p class="text-indigo-700">
+                        <?= /** @noEscape */ __('Your service badges will not be visible on the frontend until you activate this feature.'); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+            <div class="<?= !!$subscriptionViewModel->hasActiveSubscription('service_badges') ? 'opacity-50' : '' ?>">
+                <input type="text" class="form-input w-full mb-4"
+                       placeholder="<?= /** @noEscape */ __('Search services...'); ?>"
+                       x-model="searchQuery" />
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <template x-for="service in serviceList" :key="service">
+                        <div class="grid grid-cols-[180px_1fr] items-center gap-4" x-show="filterServices(service)">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600 my-0"
+                                       :id="'service-enable-' + service"
+                                       @change="toggleService(service)"
+                                       :checked="enabledServices.includes(service)"
+                                       :value="service"
+                                       :name="'services[]'" />
+                                <label class="text-sm font-medium text-gray-800 leading-5 my-0 whitespace-nowrap"
+                                       :for="'service-enable-' + service" x-text="service"></label>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <div class="mt-4 bg-indigo-50 p-4 rounded-lg">
+                <p class="text-sm text-indigo-700">
+                    <svg class="w-5 h-5 inline-block mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <?= /** @noEscape */ __('Select the services you offer to help customers find exactly what they need.'); ?>
+                </p>
             </div>
         </div>
 
@@ -294,3 +697,133 @@ $services = implode(',', array_map(fn($item) => "'" . $item['service'] . "'", $s
         </div>
     </div>
 </form>
+
+<!-- Move all JavaScript to the bottom of the file -->
+<?php if ($apiKey = $googleMapsViewModel->getApiKey()): ?>
+    <script>
+        let geocoder;
+        let isMapInitialized = false;
+
+        window.initMap = function() {
+            geocoder = new google.maps.Geocoder();
+            isMapInitialized = true;
+
+            // Initialize click handlers after Google Maps is loaded
+            initializeClickHandlers();
+        };
+
+        function initializeClickHandlers() {
+            const detectLocationBtn = document.getElementById('detect-location');
+            const getCoordinatesBtn = document.getElementById('get-coordinates');
+
+            if (detectLocationBtn) {
+                detectLocationBtn.addEventListener('click', getGeoLocation);
+            }
+
+            if (getCoordinatesBtn) {
+                getCoordinatesBtn.addEventListener('click', getCoordinatesFromAddress);
+            }
+        }
+
+        function formatCoordinate(coord) {
+            // Ensure the coordinate is formatted with a dot as decimal separator
+            return coord.toString().replace(',', '.');
+        }
+
+        function getGeoLocation() {
+            if ("geolocation" in navigator) {
+                const button = this;
+                const originalText = button.innerHTML;
+
+                // Show loading state
+                button.disabled = true;
+                button.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>`;
+
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        document.getElementById('latitude').value = formatCoordinate(position.coords.latitude);
+                        document.getElementById('longitude').value = formatCoordinate(position.coords.longitude);
+
+                        // Reset button state
+                        button.disabled = false;
+                        button.innerHTML = originalText;
+                    },
+                    function(error) {
+                        // Reset button state
+                        button.disabled = false;
+                        button.innerHTML = originalText;
+
+                        alert('<?= /** @noEscape */ __('Error getting location: %1', '__ERROR__'); ?>'.replace('__ERROR__', error.message));
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                alert('<?= /** @noEscape */ __('Geolocation is not supported by your browser'); ?>');
+            }
+        }
+
+        function getCoordinatesFromAddress(event) {
+            if (!isMapInitialized || !geocoder) {
+                alert('<?= /** @noEscape */ __('Google Maps is still initializing. Please try again in a moment.'); ?>');
+                return;
+            }
+
+            const country = document.querySelector('select[name="country"]').value;
+            const city = document.querySelector('input[name="city"]').value;
+            const fullAddress = document.querySelector('textarea[name="full_address"]').value;
+
+            if (!city || !country) {
+                alert('<?= /** @noEscape */ __('Please fill in at least the city and country fields.'); ?>');
+                return;
+            }
+
+            const address = [fullAddress, city, country].filter(Boolean).join(', ');
+
+            // Show loading state
+            const button = event.currentTarget;
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>`;
+
+            geocoder.geocode({ address: address }, function(results, status) {
+                // Reset button state
+                button.disabled = false;
+                button.innerHTML = originalText;
+
+                if (status === 'OK') {
+                    const latitude = formatCoordinate(results[0].geometry.location.lat());
+                    const longitude = formatCoordinate(results[0].geometry.location.lng());
+
+                    document.getElementById('latitude').value = latitude;
+                    document.getElementById('longitude').value = longitude;
+                } else {
+                    alert('<?= /** @noEscape */ __('Could not find coordinates for this address. Please check the address or try using the detect location button.'); ?>');
+                }
+            });
+        }
+
+        // Check if Google Maps is already loaded
+        if (typeof google !== 'undefined' && google.maps) {
+            initMap();
+        }
+    </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=<?= $escaper->escapeUrl($apiKey); ?>&callback=initMap">
+    </script>
+<?php else: ?>
+    <div class="bg-red-100 border-l-4 border-red-500 p-4 mb-4">
+        <p class="text-red-700">
+            <?= /** @noEscape */ __('Google Maps API key is not configured. Please contact the administrator.'); ?>
+        </p>
+    </div>
+<?php endif; ?>

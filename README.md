@@ -5,6 +5,8 @@ This module provides professional service listing functionality for Magento 2, a
 ## Features
 
 - ⚠️ **ONLY HYVA** Compatible! ⚠️
+- ⚠️ **OpenSearch** required ⚠️
+- ⚠️ **Aheadworks_Sarp2** required for recurring subscriptions ⚠️
 - Customer professional profile management
 - Social media links integration
 - Certificates and services listing
@@ -12,6 +14,30 @@ This module provides professional service listing functionality for Magento 2, a
 - Profile status management (Pending, Approved, Rejected)
 - Ajax-based admin actions
 - Email notifications for status changes
+- Automated profile checks via cron (every hour)
+- Order status-based feature activation
+
+## How It Works
+
+### Profile Feature Management
+
+The module uses a sophisticated system to manage profile features based on subscriptions and orders:
+
+1. **Order Requirements**:
+   - Features are only activated when the associated order has a **COMPLETE** status
+   - Pending or processing orders will not activate profile features
+
+2. **Automated Checks**:
+   - A cron job runs every hour to:
+     - Verify subscription status
+     - Check feature expiration dates
+     - Update profile visibility in OpenSearch
+     - Deactivate expired features automatically
+
+3. **Feature Activation**:
+   - Features are tied to specific products (e.g., `psl_profile_geolocation`)
+   - Each feature is independently managed
+   - Features are only active with valid subscriptions and complete orders
 
 ## Installation
 
@@ -33,23 +59,6 @@ bin/magento setup:static-content:deploy -f
 bin/magento cache:flush
 ```
 
-### Manual Installation
-
-1. Create the following directory in your Magento installation:
-   `app/code/Qoliber/Psl`
-
-2. Download the module and copy all files into the directory
-
-3. Enable the module:
-
-```bash
-bin/magento module:enable Qoliber_Psl
-bin/magento setup:upgrade
-bin/magento setup:di:compile
-bin/magento setup:static-content:deploy -f
-bin/magento cache:flush
-```
-
 ## Configuration
 
 1. Go to Stores > Configuration > Qoliber > Professional Service Listing
@@ -58,6 +67,7 @@ bin/magento cache:flush
    - Available Certificates
    - Services Offered by Agencty / Freelancer
    - Email Notifications
+   - Cron Settings (if needed)
 
 ## Usage
 

@@ -19,7 +19,6 @@ use Magento\Eav\Model\Entity\Attribute\Source\Boolean;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
-use Psr\Log\LoggerInterface;
 
 class PublicProfileCustomerAttribute implements DataPatchInterface
 {

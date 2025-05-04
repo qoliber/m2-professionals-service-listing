@@ -103,7 +103,7 @@ class PslSearchService implements PslSearchInterface
             // @phpstan-ignore-next-line
             $response = $client->query($searchParams);
 
-            return array_map(fn($hit) => $hit['_source'], $response['hits']['hits']);
+            return array_map(fn ($hit) => $hit['_source'], $response['hits']['hits']);
         }
 
         return [];
