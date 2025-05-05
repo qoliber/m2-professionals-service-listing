@@ -6,7 +6,6 @@ This module provides professional service listing functionality for Magento 2, a
 
 - ⚠️ **ONLY HYVA** Compatible! ⚠️
 - ⚠️ **OpenSearch** required ⚠️
-- ⚠️ **Aheadworks_Sarp2** required for recurring subscriptions ⚠️
 - Customer professional profile management
 - Social media links integration
 - Certificates and services listing

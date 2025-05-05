@@ -22,12 +22,10 @@ class PslOrderedItemsProvider
     /**
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
      * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
-     * @param \Aheadworks\Sarp2\Api\ProfileManagementInterface $profileManagement
      */
     public function __construct(
         private readonly ResourceConnection $resourceConnection,
         private readonly CustomerRepositoryInterface $customerRepository,
-        private readonly ProfileManagementInterface $profileManagement
     ) {
     }
 
