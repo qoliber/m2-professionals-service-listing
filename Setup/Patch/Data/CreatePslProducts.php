@@ -93,9 +93,7 @@ class CreatePslProducts implements DataPatchInterface
 
             $this->productRepository->save($product);
         } catch (\Exception $e) {
-            throw new CouldNotSaveException(
-                __('Could not save product: %1', $e->getMessage())
-            );
+            var_dump(sprintf('Could not save product: %s', $e->getMessage()));
         }
     }
 
