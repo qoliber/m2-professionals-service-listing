@@ -19,8 +19,9 @@ use Magento\Catalog\Model\Product\Visibility;
 use Magento\Framework\App\State;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
+use Magento\Framework\Setup\Patch\NonTransactionableInterface;
 
-class CreatePslProducts implements DataPatchInterface
+class CreatePslProducts implements DataPatchInterface, NonTransactionableInterface
 {
     /** @var mixed[] */
     private const PRODUCTS = [
