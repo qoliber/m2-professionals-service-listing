@@ -39,6 +39,9 @@ class CreateOpenSearchIndex implements DataPatchInterface
         } catch (\Exception $e) {
             return $this;
         }
+        if (!is_a($client, \Magento\OpenSearch\Model\OpenSearch::class)) {
+            return $this;
+        }
 
         // @phpstan-ignore-next-line
         if ($client->getOpenSearchClient()->indices()->exists(
